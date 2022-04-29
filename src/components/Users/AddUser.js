@@ -1,14 +1,23 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import ErrorModal from '../UI/ErrorModal'
 
-const AddUser = () => {
+const AddUser = (props) => {
     const [userName, setUserName] = useState('');
     const [userAge, setUserAge] = useState('');
-    const [savedUser, setSavedUser] = useState({
-        name: '',
-        age: '',
-        id: ''
-    });
+    const [error, setError] = useState()
 
+    const addUserHandler = (event) => {
+        event.preventDefault()
+        if (userName.trim().length === 0) {
+            setError(true)
+            return;
+        }
+
+        props.onAddUser(userName, userAge)
+        setUserName('')
+        setUserAge('')
+    }
+    
     const changeNameHandler = (event) => {
         setUserName(event.target.value)
     }
@@ -16,32 +25,23 @@ const AddUser = () => {
     const changeAgeHandler = (event) => {
         setUserAge(event.target.value)
     }
-    const addUserHandler = (event) => {
-        event.preventDefault()
-        const user = {
-            name: userName,
-            age: userAge,
-            id: Date.now().toString()
-        }
-        
-        setSavedUser(prevState=> {
-            return{
-                ...prevState,
-                user
-            }
-        })
-        console.log(user)
-        console.log(savedUser)
+
+    const errorHandler = () => {
+        setError(null)
     }
 
   return (
-    <form onSubmit={addUserHandler}>
-        <label htmlFor="username">Username</label>
-        <input type="text" id="username" onChange={changeNameHandler}/>
-        <label htmlFor="age">Age</label>
-        <input type="number" id="age"  min={0} step={1} onChange={changeAgeHandler}/>
-        <button type='submit'>Add</button>
-    </form>
+    <div>
+        {error ? <ErrorModal onConfirm={errorHandler} /> : (
+        <form onSubmit={addUserHandler}>
+            <label htmlFor="userNameinput">Name</label>
+            <input type="text" value={userName} onChange={changeNameHandler} placeholder="Enter a name"/>
+            <label htmlFor="userAgeinput">Age</label>
+            <input type="number" step={1} min={1} value={userAge} onChange={changeAgeHandler} placeholder="Enter a number"/>
+            <button type="submit">Add user</button>
+        </form>
+        )}
+    </div>
   )
 }
 

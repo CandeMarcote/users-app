@@ -1,0 +1,6 @@
+.btnGeneral {
+    border: solid 1px grey;
+    border-radius: 10px;
+    min-width: 8em;
+    min-height: 3em;
+}
